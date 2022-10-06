@@ -76,97 +76,96 @@
 // .catch(handleFailure)
 
 // Chaining Promise
-// const state = {
+const state = {
+  stock: {
+    coffeeBeans: 250,
+    water: 1000,
+  },
+  isCoffeeMachineBusy: false,
+};
 
-//     stock: {
-//         coffeeBeans: 250,
-//         water: 1000,
-//     },
-//     isCoffeeMachineBusy: false,
-// }
+const boilWater = () => {
+  return new Promise((resolve, reject) => {
+    console.log("Air sedang dipanaskan...");
+    setTimeout(() => {
+      resolve("Air sudah sudah siap");
+    }, 2000);
+  });
+};
 
-// const boilWater = () => {
-//     return new Promise((resolve, reject) => {
-//         console.log("Air sedang dipanaskan...")
-//         setTimeout(() => {
-//             resolve("Air sudah sudah siap")
-//         }, 2000)
-//     })
-// }
+const grindCoffeBeans = () => {
+  return new Promise((resolve, reject) => {
+    console.log("Kopi sedang digiling");
+    setTimeout(() => {
+      resolve("Kopi berhasil digiling");
+    }, 3000);
+  });
+};
 
-// const grindCoffeBeans = () => {
-//     return new Promise((resolve, reject) => {
-//         console.log("Kopi sedang digiling")
-//         setTimeout(() => {
-//             resolve("Kopi berhasil digiling")
-//         }, 3000 )
-//     })
-// }
+const checkAvailability = () => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (!state.isCoffeeMachineBusy) {
+        resolve("Mesin kopi siap digunakan.");
+      } else {
+        reject("Maaf, mesin sedang sibuk.");
+      }
+    }, 1000);
+  });
+};
 
-// const checkAvailability = () => {
-// return new Promise((resolve, reject) => {
-//     setTimeout(() => {
-//         if (!state.isCoffeeMachineBusy) {
-//             resolve("Mesin kopi siap digunakan.");
-//         } else {
-//             reject("Maaf, mesin sedang sibuk.");
-//         }
-//     }, 1000);
-// });
-// };
+const checkStock = () => {
+  return new Promise((resolve, reject) => {
+    state.isCoffeeMachineBusy = true;
+    setTimeout(() => {
+      if (state.stock.coffeeBeans >= 16 && state.stock.water >= 250) {
+        resolve("Stok cukup. Bisa membuat kopi.");
+      } else {
+        reject("Stok tidak cukup!");
+      }
+    }, 1500);
+  });
+};
 
-// const checkStock = () => {
-// return new Promise((resolve, reject) => {
-//     state.isCoffeeMachineBusy = true;
-//     setTimeout(() => {
-//         if (state.stock.coffeeBeans >= 16 && state.stock.water >= 250) {
-//             resolve("Stok cukup. Bisa membuat kopi.");
-//         } else {
-//             reject("Stok tidak cukup!");
-//         }
-//     }, 1500);
-// });
-// };
+const brewCoffee = () => {
+  console.log("Membuatkan kopi Anda...");
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve("Kopi sudah siap!");
+    }, 2000);
+  });
+};
 
-// const brewCoffee = () => {
-// console.log("Membuatkan kopi Anda...")
-// return new Promise((resolve, reject) => {
-//     setTimeout(() => {
-//         resolve("Kopi sudah siap!")
-//     }, 2000);
-// });
-// };
+function makeEspresso() {
+  checkAvailability()
+    .then((value) => {
+      console.log(value);
+      return checkStock();
+    })
+    .then((value) => {
+      console.log(value);
+      const promises = [boilWater(), grindCoffeBeans()];
 
-// function makeEspresso() {
-// checkAvailability()
-//     .then((value) => {
-//         console.log(value);
-//         return checkStock();
-//     })
-//     .then(value => {
-//         console.log(value)
-//         const promises = [boilWater(), grindCoffeBeans()]
+      return Promise.all(promises);
+    })
+    .then((value) => {
+      console.log(value);
+      return brewCoffee();
+    })
+    .then((value) => {
+      console.log(value);
+      state.isCoffeeMachineBusy = false;
+    })
+    .catch((rejectedReason) => {
+      console.log(rejectedReason);
+      state.isCoffeeMachineBusy = false;
+    });
+}
 
-//         return Promise.all(promises)
-//     })
-//     .then((value) => {
-//         console.log(value)
-//         return brewCoffee();
-//     })
-//     .then(value => {
-//         console.log(value);
-//         state.isCoffeeMachineBusy = false;
-//     })
-//     .catch(rejectedReason => {
-//         console.log(rejectedReason);
-//         state.isCoffeeMachineBusy = false;
-//     });
-// }
-
-// makeEspresso();
+makeEspresso();
 
 async function makeCoffe() {
-    const coffee = await getCoffee()
-    console.log(coffee)
+  const coffee = await getCoffee();
+  console.log(coffee);
 }
-makeCoffe()
+makeCoffe();
